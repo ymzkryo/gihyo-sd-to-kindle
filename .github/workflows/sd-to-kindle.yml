@@ -25,6 +25,14 @@ jobs:
           uv sync
           uv run playwright install chromium --with-deps
 
+      - name: Restore last sent cache
+        uses: actions/cache@v4
+        with:
+          path: work/last_sent.txt
+          key: last-sent-${{ github.run_number }}
+          restore-keys: |
+            last-sent-
+
       - name: Run script
         env:
           GIHYO_EMAIL: ${{ secrets.GIHYO_EMAIL }}
