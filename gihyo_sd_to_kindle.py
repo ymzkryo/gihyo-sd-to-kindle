@@ -343,6 +343,13 @@ def find_latest_sd_epub_url(page: Page) -> Tuple[str, str]:
                     item.click()
                     page.wait_for_timeout(5000)  # モーダルとダウンロードボタンが有効になるまで待つ (GitHub Actionsでは時間がかかる)
 
+                    # モーダル内の「ダウンロード」ボタンをクリックしてダウンロードオプションを表示
+                    download_btn = page.locator("a.download[title='ダウンロードする']")
+                    if download_btn.count() > 0:
+                        print(f"✅ Found download button, clicking to reveal download options...")
+                        download_btn.first.click()
+                        page.wait_for_timeout(2000)  # ダウンロードオプションが表示されるまで待つ
+
                     # モーダル内でEPUB/PDFダウンロードリンクを探す
                     # EPUBを優先的に探す
                     epub_link = None
