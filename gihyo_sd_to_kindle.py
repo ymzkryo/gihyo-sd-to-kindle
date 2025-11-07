@@ -341,7 +341,7 @@ def find_latest_sd_epub_url(page: Page) -> Tuple[str, str]:
                 if KEY in normalize(text):
                     print(f"✅ Found SD book item, clicking to open modal...")
                     item.click()
-                    page.wait_for_timeout(3000)  # モーダルとダウンロードボタンが有効になるまで待つ
+                    page.wait_for_timeout(5000)  # モーダルとダウンロードボタンが有効になるまで待つ (GitHub Actionsでは時間がかかる)
 
                     # モーダル内でEPUB/PDFダウンロードリンクを探す
                     # EPUBを優先的に探す

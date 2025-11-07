@@ -35,6 +35,7 @@ jobs:
 
       - name: Run script
         env:
+          DEBUG: 1
           GIHYO_EMAIL: ${{ secrets.GIHYO_EMAIL }}
           GIHYO_PASSWORD: ${{ secrets.GIHYO_PASSWORD }}
           SMTP_HOST: ${{ secrets.SMTP_HOST }}
