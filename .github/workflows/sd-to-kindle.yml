@@ -1,0 +1,48 @@
+name: Send Software Design to Kindle
+
+on:
+  schedule:
+    # 毎月19日 00:05 JST (= 18日 15:05 UTC)
+    - cron: '5 15 18 * *'
+  workflow_dispatch: # 手動実行も可能
+
+jobs:
+  send-to-kindle:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install uv
+        run: curl -LsSf https://astral.sh/uv/install.sh | sh
+
+      - name: Install dependencies
+        run: |
+          uv sync
+          uv run playwright install chromium --with-deps
+
+      - name: Run script
+        env:
+          GIHYO_EMAIL: ${{ secrets.GIHYO_EMAIL }}
+          GIHYO_PASSWORD: ${{ secrets.GIHYO_PASSWORD }}
+          SMTP_HOST: ${{ secrets.SMTP_HOST }}
+          SMTP_PORT: ${{ secrets.SMTP_PORT }}
+          SMTP_USER: ${{ secrets.SMTP_USER }}
+          SMTP_PASS: ${{ secrets.SMTP_PASS }}
+          SENDER_EMAIL: ${{ secrets.SENDER_EMAIL }}
+          KINDLE_EMAIL: ${{ secrets.KINDLE_EMAIL }}
+        run: uv run python gihyo_sd_to_kindle.py
+
+      - name: Upload artifacts on failure
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: debug-outputs
+          path: |
+            work/*.html
+            work/*.png
+          if-no-files-found: ignore
